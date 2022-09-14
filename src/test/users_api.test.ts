@@ -1,7 +1,6 @@
 import { connectToDB, disconnectFromDB } from "../database";
 import request from "supertest";
 import { app } from "../index";
-import mongoose from "mongoose";
 
 describe("Users API", () => {
 	beforeAll(async () => {
