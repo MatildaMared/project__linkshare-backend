@@ -4,6 +4,13 @@ import { app } from "../index";
 import { User } from "../models/userModel";
 import { StatusCode } from "../ts/enums/StatusCode";
 import { ErrorMessage } from "../ts/enums/ErrorMessage";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+	throw new Error("JWT_SECRET is not defined");
+}
 
 describe("Users API", () => {
 	beforeAll(async () => {
@@ -111,6 +118,40 @@ describe("Users API", () => {
 			expect(response.body.message).toBe(
 				ErrorMessage.InsufficientPasswordLength,
 			);
+		});
+
+		it("returns a token", async () => {
+			const newUser = {
+				name: "Test User",
+				email: "test@test.com",
+				password: "test123",
+			};
+
+			const response = await request(app)
+				.post("/api/users")
+				.send(newUser)
+				.expect(StatusCode.Created)
+				.expect("Content-Type", /application\/json/);
+
+			expect(response.body.token).toBeDefined();
+		});
+
+		it("returns a token with the correct user id", async () => {
+			const newUser = {
+				name: "Test User",
+				email: "test@test.com",
+				password: "test123",
+			};
+
+			const response = await request(app)
+				.post("/api/users")
+				.send(newUser)
+				.expect(StatusCode.Created)
+				.expect("Content-Type", /application\/json/);
+
+			const token = response.body.token;
+			const decodedToken = jwt.verify(token, JWT_SECRET);
+			console.log("decoded Token: ", decodedToken);
 		});
 	});
 
