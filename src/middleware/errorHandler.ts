@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Error } from "mongoose";
 import { ErrorResponse } from "../utilities/errorResponse";
 import { StatusCode } from "../ts/enums/StatusCode";
@@ -7,7 +7,6 @@ function errorHandler(
 	err: TypeError | Error | ErrorResponse,
 	req: Request,
 	res: Response,
-	next: NextFunction,
 ) {
 	let error = { ...err };
 
