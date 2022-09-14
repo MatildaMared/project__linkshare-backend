@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/userModel";
-import { ErrorResponse } from "../utilities/errorResponse";
 
 async function createUser(req: Request, res: Response, next: NextFunction) {
 	try {
@@ -17,8 +16,6 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 			user,
 			token: user.getToken(),
 		});
-
-		console.log("Will create user");
 	} catch (err) {
 		return next(err);
 	}

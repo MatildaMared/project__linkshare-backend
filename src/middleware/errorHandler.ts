@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import { Error } from "mongoose";
 import { ErrorResponse } from "../utilities/errorResponse";
+import { StatusCode } from "../ts/enums/StatusCode";
 
 function errorHandler(
-	err: TypeError | ErrorResponse,
+	err: TypeError | Error | ErrorResponse,
 	req: Request,
 	res: Response,
 	next: NextFunction,
@@ -10,7 +12,17 @@ function errorHandler(
 	let error = { ...err };
 
 	if (!(err instanceof ErrorResponse)) {
-		error = new ErrorResponse(err.message || "Something went wrong", 500);
+		error = new ErrorResponse(
+			err.message || "Something went wrong",
+			StatusCode.InternalServerError,
+		);
+	}
+
+	if (err instanceof Error.ValidationError) {
+		const message = Object.values(err.errors)
+			.map((val) => val.message)
+			.join(", ");
+		error = new ErrorResponse(message, StatusCode.BadRequest);
 	}
 
 	res.status((error as ErrorResponse).statusCode).json({

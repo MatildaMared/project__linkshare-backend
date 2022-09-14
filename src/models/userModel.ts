@@ -1,6 +1,7 @@
 import mongoose, { InferSchemaType } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ErrorMessage } from "../ts/enums/ErrorMessage";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRE = process.env.JWT_EXPIRE;
@@ -16,24 +17,24 @@ if (!JWT_EXPIRE) {
 const userSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		required: [true, "Please enter your name"],
+		required: [true, ErrorMessage.MissingName],
 		trim: true,
 	},
 	email: {
 		type: String,
-		required: [true, "Please enter your email"],
+		required: [true, ErrorMessage.MissingEmail],
 		unique: true,
 		trim: true,
 		lowercase: true,
 		match: [
 			/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-			"Please enter a valid email",
+			ErrorMessage.InvalidEmail,
 		],
 	},
 	password: {
 		type: String,
-		required: [true, "Please enter your password"],
-		minlength: [6, "Minimum password length is 6 characters"],
+		required: [true, ErrorMessage.MissingPassword],
+		minlength: [6, ErrorMessage.InsufficientPasswordLength],
 		select: false,
 	},
 });
