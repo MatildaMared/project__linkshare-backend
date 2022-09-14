@@ -1,19 +1,25 @@
 import { Request, Response, NextFunction } from "express";
+import { User } from "../models/userModel";
+import { ErrorResponse } from "../utilities/errorResponse";
 
 async function createUser(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { name, email, password } = req.body;
 
-		if (!name || !email || !password) {
-			return res.status(400).json({
-				success: false,
-				message: "Please enter all fields",
-			});
-		}
+		const user = await User.create({
+			name,
+			email,
+			password,
+		});
+
+		res.status(201).json({
+			success: true,
+			user,
+			token: user.getToken(),
+		});
 
 		console.log("Will create user");
 	} catch (err) {
-		console.log(err);
 		return next(err);
 	}
 }

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -62,7 +62,15 @@ userSchema.methods.getToken = function () {
 	});
 };
 
-const User = mongoose.model("User", userSchema);
+declare interface IUser extends InferSchemaType<typeof userSchema> {
+	comparePassword: (
+		enteredPassword: string,
+		userPassword: string,
+	) => Promise<boolean>;
+	getToken: () => string;
+}
+
+const User = mongoose.model<IUser>("User", userSchema);
 
 userSchema.set("toJSON", {
 	transform: (_, returnedObject) => {

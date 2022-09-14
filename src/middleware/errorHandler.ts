@@ -10,7 +10,7 @@ function errorHandler(
 	let error = { ...err };
 
 	if (!(err instanceof ErrorResponse)) {
-		error = new ErrorResponse("Something went wrong", 500);
+		error = new ErrorResponse(err.message || "Something went wrong", 500);
 	}
 
 	res.status((error as ErrorResponse).statusCode).json({

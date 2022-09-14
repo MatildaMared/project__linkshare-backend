@@ -3,6 +3,8 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import { config } from "dotenv";
 config();
 
+let dbConnection;
+
 export async function connectToDB() {
 	if (process.env.NODE_ENV === "test") {
 		await connectToTestDB();
@@ -18,7 +20,7 @@ async function connectToProdDB() {
 		if (!connectString) {
 			throw new Error("No connection string provided");
 		}
-		await mongoose.connect(connectString);
+		dbConnection = await mongoose.connect(connectString);
 
 		console.log("Connected to DB... 📝 🌸");
 	} catch (err) {
@@ -32,7 +34,7 @@ async function connectToTestDB() {
 		const mongoServer = await MongoMemoryServer.create();
 		const connectString = await mongoServer.getUri();
 
-		await mongoose.connect(connectString);
+		dbConnection = await mongoose.connect(connectString);
 
 		console.log("Connected to test DB... 📝 🌸");
 	} catch (err) {
@@ -45,7 +47,7 @@ async function connectToTestDB() {
 
 export async function disconnectFromDB() {
 	try {
-		await mongoose.connection.close();
+		await mongoose.disconnect();
 		console.log("Disconnected from DB... 📝 🌸");
 	} catch (err) {
 		console.log(err);

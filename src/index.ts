@@ -7,7 +7,9 @@ config();
 
 const PORT = process.env.port || 3000;
 
-export const app = express();
+const app = express();
+
+app.use(express.json());
 
 app.use("/api/users", usersRoutes);
 
@@ -20,3 +22,5 @@ if (process.env.NODE_ENV !== "test") {
 
 	connectToDB();
 }
+
+export { app };

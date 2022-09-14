@@ -1,7 +1,7 @@
 import { connectToDB, disconnectFromDB } from "../database";
-import supertest from "supertest";
+import request from "supertest";
 import { app } from "../index";
-const api = supertest(app);
+import mongoose from "mongoose";
 
 describe("Users API", () => {
 	beforeAll(async () => {
@@ -16,7 +16,7 @@ describe("Users API", () => {
 				password: "test123",
 			};
 
-			const response = await api
+			const response = await request(app)
 				.post("/api/users")
 				.send(newUser)
 				.expect(201)
