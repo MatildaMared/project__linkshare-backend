@@ -2,6 +2,7 @@ import { connectToDB } from "./database";
 import express from "express";
 import { config } from "dotenv";
 import usersRoutes from "./routes/usersRoutes";
+import errorHandler from "./middleware/errorHandler";
 config();
 
 const PORT = process.env.port || 3000;
@@ -9,6 +10,8 @@ const PORT = process.env.port || 3000;
 export const app = express();
 
 app.use("/api/users", usersRoutes);
+
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
 	app.listen(PORT || 3000, () => {
