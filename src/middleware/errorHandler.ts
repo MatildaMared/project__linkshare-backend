@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Error } from "mongoose";
 import { ErrorResponse } from "../utilities/errorResponse";
 import { StatusCode } from "../ts/enums/StatusCode";
@@ -7,6 +7,9 @@ function errorHandler(
 	err: TypeError | Error | ErrorResponse,
 	req: Request,
 	res: Response,
+	// DON'T REMOVE NEXT FUNCTION OR ALL WILL BREAK 💥 🤯
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	next: NextFunction,
 ) {
 	let error = { ...err };
 

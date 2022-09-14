@@ -64,6 +64,54 @@ describe("Users API", () => {
 
 			expect(response.body.message).toBe(ErrorMessage.MissingEmail);
 		});
+
+		it("fails if name is missing", async () => {
+			const newUser = {
+				email: "test@test.com",
+				password: "test123",
+			};
+
+			const response = await request(app)
+				.post("/api/users")
+				.send(newUser)
+				.expect(StatusCode.BadRequest)
+				.expect("Content-Type", /application\/json/);
+
+			expect(response.body.message).toBe(ErrorMessage.MissingName);
+		});
+
+		it("fails if password is missing", async () => {
+			const newUser = {
+				name: "Test User",
+				email: "test@test.com",
+			};
+
+			const response = await request(app)
+				.post("/api/users")
+				.send(newUser)
+				.expect(StatusCode.BadRequest)
+				.expect("Content-Type", /application\/json/);
+
+			expect(response.body.message).toBe(ErrorMessage.MissingPassword);
+		});
+
+		it("fails if password is too short", async () => {
+			const newUser = {
+				name: "Test User",
+				email: "test@test.com",
+				password: "test",
+			};
+
+			const response = await request(app)
+				.post("/api/users")
+				.send(newUser)
+				.expect(StatusCode.BadRequest)
+				.expect("Content-Type", /application\/json/);
+
+			expect(response.body.message).toBe(
+				ErrorMessage.InsufficientPasswordLength,
+			);
+		});
 	});
 
 	afterAll(async () => {

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/userModel";
+import { StatusCode } from "../ts/enums/StatusCode";
 
 async function createUser(req: Request, res: Response, next: NextFunction) {
 	try {
@@ -11,7 +12,7 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 			password,
 		});
 
-		res.status(201).json({
+		res.status(StatusCode.Created).json({
 			success: true,
 			user,
 			token: user.getToken(),
