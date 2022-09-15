@@ -157,6 +157,35 @@ describe("Users API", () => {
 		});
 	});
 
+	describe("Logging in", () => {
+		beforeAll(async () => {
+			await User.deleteMany({});
+			// Creating a new user
+			const newUser = {
+				name: "Test User",
+				email: "test@test.com",
+				password: "test123",
+			};
+
+			await request(app).post("/api/users").send(newUser);
+		});
+
+		it("should return a token", async () => {
+			const credentials = {
+				email: "test@test.com",
+				password: "test123",
+			};
+
+			const response = await request(app)
+				.post("/api/users/login")
+				.send(credentials)
+				.expect(StatusCode.Ok)
+				.expect("Content-Type", /application\/json/);
+
+			expect(response.body.token).toBeDefined();
+		});
+	});
+
 	afterAll(async () => {
 		await disconnectFromDB();
 	});
