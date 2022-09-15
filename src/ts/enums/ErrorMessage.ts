@@ -5,4 +5,5 @@ export enum ErrorMessage {
 	MissingEmail = "Please enter an email",
 	MissingName = "Please enter a name",
 	InsufficientPasswordLength = "Password must be at least 6 characters",
+	NoToken = "Unauthorized",
 }
