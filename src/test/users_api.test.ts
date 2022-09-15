@@ -5,6 +5,7 @@ import { User } from "../models/userModel";
 import { StatusCode } from "../ts/enums/StatusCode";
 import { ErrorMessage } from "../ts/enums/ErrorMessage";
 import jwt from "jsonwebtoken";
+import { VerifiedToken } from "../ts/interfaces/VerifiedToken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -136,7 +137,7 @@ describe("Users API", () => {
 			expect(response.body.token).toBeDefined();
 		});
 
-		it("returns a token with the correct user id", async () => {
+		it("returns a token signed with the correct user id", async () => {
 			const newUser = {
 				name: "Test User",
 				email: "test@test.com",
@@ -150,8 +151,9 @@ describe("Users API", () => {
 				.expect("Content-Type", /application\/json/);
 
 			const token = response.body.token;
-			const decodedToken = jwt.verify(token, JWT_SECRET);
-			console.log("decoded Token: ", decodedToken);
+			const idFromUser = response.body.user.id;
+			const decodedToken = jwt.verify(token, JWT_SECRET) as VerifiedToken;
+			expect(decodedToken.id).toBe(idFromUser);
 		});
 	});
 
